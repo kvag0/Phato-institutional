@@ -1,6 +1,6 @@
 name: phato_prototype
-description: "Um protótipo estático do app Phato."
-publish_to: 'none'
+description: Um protótipo institucional do aplicativo Phato.
+publish_to: 'none' 
 
 version: 1.0.0+1
 
@@ -10,17 +10,29 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
-  google_fonts: ^6.2.1
-  flutter_dotenv: ^5.1.0
-  lottie: ^3.1.2
+  
+  # Ícones para o design Cupertino
+  cupertino_icons: ^1.0.2
+  
+  # Fontes personalizadas do Google
+  google_fonts: ^6.1.0
+  
+  # Para formatação de datas (usado no WelcomeHeader)
+  intl: ^0.19.0
+  
+  # Para as animações do PhatoBot
+  lottie: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^3.0.0
 
 flutter:
+  # A linha abaixo é a correção. 'true' está sem aspas.
   uses-material-design: true
-  assets:
-    - .env
+
+  # Se você tiver assets (como imagens ou animações locais), descomente e adicione aqui.
+  # assets:
+  #   - assets/animations/
+
