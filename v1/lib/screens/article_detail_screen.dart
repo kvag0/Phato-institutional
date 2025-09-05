@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:phato_prototype/core/theme/app_theme.dart';
-import 'package:phato_prototype/models/article.dart';
-import 'package:phato_prototype/screens/phatobot_screen.dart';
+import '../models/article.dart';
+import '../core/theme/app_theme.dart';
+import 'phatobot_screen.dart';
 
 class ArticleDetailScreen extends StatelessWidget {
   final Article article;
@@ -10,8 +10,8 @@ class ArticleDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // A CORREÇÃO ESTÁ AQUI: Obtemos as informações sobre a área segura do ecrã.
-    final safeArea = MediaQuery.of(context).padding;
+    // Adquirir o padding inferior para ajustar a posição do botão
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -19,24 +19,24 @@ class ArticleDetailScreen extends StatelessWidget {
           article.source.name,
           style: AppTheme.secondaryTextStyle.copyWith(fontSize: 16),
         ),
-        leading: CupertinoNavigationBarBackButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        leading: const CupertinoNavigationBarBackButton(),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             CupertinoButton(
               padding: EdgeInsets.zero,
-              child: const Icon(CupertinoIcons.bookmark,
-                  color: AppTheme.phatoTextGray),
+              child: const Icon(
+                CupertinoIcons.bookmark,
+                color: AppTheme.phatoTextGray,
+              ),
               onPressed: () {},
             ),
             CupertinoButton(
               padding: EdgeInsets.zero,
-              child: const Icon(CupertinoIcons.share,
-                  color: AppTheme.phatoTextGray),
+              child: const Icon(
+                CupertinoIcons.share,
+                color: AppTheme.phatoTextGray,
+              ),
               onPressed: () {},
             ),
           ],
@@ -44,78 +44,77 @@ class ArticleDetailScreen extends StatelessWidget {
       ),
       child: Stack(
         children: [
+          // Conteúdo principal com scroll
           Positioned.fill(
-            child: ListView(
-              children: [
-                if (article.imageUrl != null && article.imageUrl!.isNotEmpty)
-                  Image.network(
-                    article.imageUrl!,
-                    height: 250,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(article.title, style: AppTheme.headlineStyle),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Por ${article.author ?? article.source.name} - ${article.publishedAt.day}/${article.publishedAt.month}/${article.publishedAt.year}',
-                        style:
-                            AppTheme.secondaryTextStyle.copyWith(fontSize: 14),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        article.content ?? 'Conteúdo não disponível.',
-                        style: AppTheme.bodyTextStyle.copyWith(
-                          fontSize: 16,
-                          height: 1.5,
+            child: SafeArea(
+              child: ListView(
+                padding: const EdgeInsets.only(
+                    bottom: 80), // Espaço para o botão flutuante
+                children: [
+                  if (article.imageUrl != null && article.imageUrl!.isNotEmpty)
+                    // CORREÇÃO: Alterado de Image.network para Image.asset
+                    Image.asset(
+                      article.imageUrl!,
+                      height: 250,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 250,
+                          color: AppTheme.phatoCardGray,
+                          child: const Icon(CupertinoIcons.photo,
+                              color: AppTheme.phatoTextGray),
+                        );
+                      },
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(article.title, style: AppTheme.headlineStyle),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Por ${article.author ?? article.source.name}',
+                          style: AppTheme.secondaryTextStyle
+                              .copyWith(fontSize: 14),
                         ),
-                      ),
-                      const SizedBox(height: 24),
-                      if (article.analysis != null)
-                        _buildAnalysisSection(article.analysis!),
-                      const SizedBox(height: 120), // Espaço para o botão
-                    ],
+                        const SizedBox(height: 24),
+                        Text(
+                          article.content ?? 'Conteúdo não disponível.',
+                          style: AppTheme.bodyTextStyle.copyWith(height: 1.5),
+                        ),
+                        const SizedBox(height: 24),
+                        if (article.analysis != null)
+                          _buildAnalysisSection(article.analysis!)
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
+          // Botão flutuante do PhatoBot
           Positioned(
-            // A CORREÇÃO CONTINUA AQUI: Adicionamos o `safeArea.bottom` à
-            // posição do botão. Isto garante que ele flutue acima da barra
-            // de navegação do sistema (home indicator).
-            bottom: 20 + safeArea.bottom,
-            left: 20,
-            right: 20,
+            bottom:
+                bottomPadding + 16, // Posição ajustada com o padding inferior
+            left: 16,
+            right: 16,
             child: CupertinoButton(
               color: AppTheme.phatoYellow,
-              borderRadius: BorderRadius.circular(30.0),
-              padding: const EdgeInsets.symmetric(vertical: 16),
               onPressed: () {
                 Navigator.of(context).push(
                   CupertinoPageRoute(
-                    builder: (context) =>
-                        PhatoBotScreen(articleContext: article),
+                    builder: (context) => PhatoBotScreen(article: article),
                   ),
                 );
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(CupertinoIcons.chat_bubble_2_fill,
-                      color: AppTheme.phatoBlack),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Perguntar ao PhatoBot',
-                    style: AppTheme.bodyTextStyle.copyWith(
-                        color: AppTheme.phatoBlack,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
+              child: Text(
+                'Perguntar ao PhatoBot',
+                style: AppTheme.bodyTextStyle.copyWith(
+                  color: AppTheme.phatoBlack,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           )
@@ -158,7 +157,7 @@ class ArticleDetailScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildFactRow(CupertinoIcons.person_3, 'Quem:', facts.who.join(', ')),
+        _buildFactRow(CupertinoIcons.person_2, 'Quem:', facts.who.join(', ')),
         _buildFactRow(CupertinoIcons.doc_text, 'O quê:', facts.what),
         _buildFactRow(CupertinoIcons.calendar, 'Quando:', facts.when),
         _buildFactRow(CupertinoIcons.location, 'Onde:', facts.where.join(', ')),

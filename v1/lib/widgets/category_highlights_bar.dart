@@ -1,15 +1,26 @@
 import 'package:flutter/cupertino.dart';
-import 'package:phato_prototype/core/theme/app_theme.dart';
+import '../core/theme/app_theme.dart';
+
+// Modelo simples para os dados de um destaque
+class Highlight {
+  final String title;
+  final String imagePath;
+
+  Highlight({required this.title, required this.imagePath});
+}
 
 class CategoryHighlightsBar extends StatelessWidget {
   const CategoryHighlightsBar({super.key});
 
-  final List<String> _highlightTitles = const [
-    'Economia',
-    'Política',
-    'Meio Amb.',
-    'Tecnologia',
-    'Esportes',
+  // Lista estática de destaques que agora usa imagens locais.
+  static final List<Highlight> _highlights = [
+    Highlight(title: 'Economia', imagePath: 'assets/highlights/economia.png'),
+    Highlight(title: 'Política', imagePath: 'assets/highlights/politica.png'),
+    Highlight(
+        title: 'Meio Amb.', imagePath: 'assets/highlights/meio-ambiente.png'),
+    Highlight(
+        title: 'Tecnologia', imagePath: 'assets/highlights/tecnologia.png'),
+    Highlight(title: 'Desporto', imagePath: 'assets/highlights/desporto.png'),
   ];
 
   @override
@@ -18,15 +29,14 @@ class CategoryHighlightsBar extends StatelessWidget {
       height: 110,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: _highlightTitles.length + 1, // +1 para o botão "Adicionar"
+        itemCount: _highlights.length + 1, // +1 para o botão "Adicionar"
         padding: const EdgeInsets.only(left: 16.0),
         itemBuilder: (context, index) {
           if (index == 0) {
             return _buildAddItem();
           }
-          final title = _highlightTitles[index - 1];
-          return _buildHighlightItem(title,
-              hasBorder: index == 1); // Simula o primeiro item selecionado
+          final highlight = _highlights[index - 1];
+          return _buildHighlightItem(highlight);
         },
       ),
     );
@@ -36,35 +46,51 @@ class CategoryHighlightsBar extends StatelessWidget {
     return _buildBaseHighlight(
       title: 'Adicionar',
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: AppTheme.phatoCardGray,
+          border: Border.all(color: AppTheme.phatoTextGray, width: 2),
         ),
-        child: const Icon(
-          CupertinoIcons.add,
-          color: AppTheme.phatoTextGray,
-          size: 32,
+        child: const Center(
+          child: Icon(
+            CupertinoIcons.add,
+            color: AppTheme.phatoTextGray,
+            size: 32,
+          ),
         ),
       ),
-      onTap: () {},
+      onTap: () {
+        /* Sem ação por agora */
+      },
     );
   }
 
-  Widget _buildHighlightItem(String title, {bool hasBorder = false}) {
+  Widget _buildHighlightItem(Highlight highlight) {
     return _buildBaseHighlight(
-      title: title,
-      child: Container(
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: hasBorder
-                ? Border.all(color: AppTheme.phatoYellow, width: 2.5)
-                : null,
-            image: const DecorationImage(
-              image: NetworkImage('https://placehold.co/140x140/2a2a2a/2a2a2a'),
-              fit: BoxFit.cover,
-            )),
+      title: highlight.title,
+      child: ClipOval(
+        // Usamos ClipOval para garantir que a imagem fique dentro do círculo
+        child: Image.asset(
+          highlight.imagePath,
+          fit: BoxFit.cover,
+          width: 70, // Tamanho explícito para a imagem
+          height: 70,
+          // CORREÇÃO: Adicionamos um errorBuilder para lidar com imagens em falta.
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: 70,
+              height: 70,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppTheme.phatoCardGray,
+                border: Border.all(color: AppTheme.phatoYellow, width: 2.5),
+              ),
+            );
+          },
+        ),
       ),
-      onTap: () {},
+      onTap: () {
+        /* Sem ação por agora */
+      },
     );
   }
 
@@ -80,7 +106,16 @@ class CategoryHighlightsBar extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(width: circleSize, height: circleSize, child: child),
+          // Envolvemos o 'child' (a imagem) num Container com a borda amarela.
+          Container(
+            width: circleSize,
+            height: circleSize,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppTheme.phatoYellow, width: 2.5),
+            ),
+            child: child,
+          ),
           const SizedBox(height: 6),
           Text(
             title,
