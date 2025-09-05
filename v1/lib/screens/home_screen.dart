@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:phato_prototype/core/theme/app_theme.dart';
 import 'package:phato_prototype/screens/feed_tab_screen.dart';
 import 'package:phato_prototype/screens/phatobot_screen.dart';
-import 'package:phato_prototype/screens/search_screen.dart';
 import 'package:phato_prototype/screens/user_profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -19,19 +18,13 @@ class HomeScreen extends StatelessWidget {
                 return const FeedTabScreen();
               },
             );
-          case 1: // Aba "Pesquisa"
-            return CupertinoTabView(
-              builder: (context) {
-                return const SearchScreen();
-              },
-            );
-          case 2: // Aba "PhatoBot"
+          case 1: // Aba "PhatoBot"
             return CupertinoTabView(
               builder: (context) {
                 return const PhatoBotScreen();
               },
             );
-          case 3: // Aba "Perfil"
+          case 2: // Aba "Perfil"
             return CupertinoTabView(
               builder: (context) {
                 return const UserProfileScreen();
@@ -56,28 +49,18 @@ class HomeScreen extends StatelessWidget {
               padding: EdgeInsets.only(top: 8.0),
               child: Icon(CupertinoIcons.home),
             ),
-            label: 'Feed',
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.only(top: 8.0),
-              child: Icon(CupertinoIcons.search),
-            ),
-            label: 'Buscar',
           ),
           BottomNavigationBarItem(
             icon: Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: Icon(CupertinoIcons.square_grid_2x2),
             ),
-            label: 'PhatoBot',
           ),
           BottomNavigationBarItem(
             icon: Padding(
               padding: EdgeInsets.only(top: 8.0),
-              child: Icon(CupertinoIcons.person),
+              child: Icon(CupertinoIcons.graph_circle),
             ),
-            label: 'Perfil',
           ),
         ],
       ),

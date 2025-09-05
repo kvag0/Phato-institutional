@@ -33,6 +33,8 @@ class Article {
     required this.createdAt,
     required this.updatedAt,
   });
+
+  get analysis => null;
 }
 
 class Source {
