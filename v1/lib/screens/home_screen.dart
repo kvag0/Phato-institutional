@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:phato_app/core/theme/app_theme.dart';
-import 'package:phato_app/pages/chatbot_page.dart';
-import 'feed_tab_page.dart';
+import 'package:phato_prototype/core/theme/app_theme.dart';
+import 'package:phato_prototype/screens/feed_tab_screen.dart';
+import 'package:phato_prototype/screens/phatobot_screen.dart';
+import 'package:phato_prototype/screens/search_screen.dart';
+import 'package:phato_prototype/screens/user_profile_screen.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,58 +16,68 @@ class HomePage extends StatelessWidget {
           case 0: // Aba "Feed"
             return CupertinoTabView(
               builder: (context) {
-                return FeedTabPage();
+                return const FeedTabScreen();
               },
             );
-          case 1: // Aba "PhatoBot"
+          case 1: // Aba "Pesquisa"
             return CupertinoTabView(
               builder: (context) {
-                return ChatbotPage();
+                return const SearchScreen();
               },
             );
-          case 2: // Aba "Finanças"
+          case 2: // Aba "PhatoBot"
             return CupertinoTabView(
               builder: (context) {
-                return const CupertinoPageScaffold(
-                  child: Center(child: Text('Tela de Finanças')),
-                );
+                return const PhatoBotScreen();
+              },
+            );
+          case 3: // Aba "Perfil"
+            return CupertinoTabView(
+              builder: (context) {
+                return const UserProfileScreen();
               },
             );
           default:
             return CupertinoTabView(
               builder: (context) {
-                return FeedTabPage();
+                return const FeedTabScreen();
               },
             );
         }
       },
       tabBar: CupertinoTabBar(
-        // Usamos as cores do nosso tema para consistência.
         activeColor: AppTheme.phatoYellow,
         inactiveColor: AppTheme.phatoTextGray,
         backgroundColor: AppTheme.phatoBlack.withOpacity(0.95),
         border: null,
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            // A CORREÇÃO ESTÁ AQUI: Envolvemos o Ícone com Padding.
             icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: const Icon(CupertinoIcons.home),
+              padding: EdgeInsets.only(top: 8.0),
+              child: Icon(CupertinoIcons.home),
             ),
+            label: 'Feed',
           ),
           BottomNavigationBarItem(
-            // A CORREÇÃO ESTÁ AQUI: Envolvemos o Ícone com Padding.
             icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: const Icon(CupertinoIcons.square_grid_2x2),
+              padding: EdgeInsets.only(top: 8.0),
+              child: Icon(CupertinoIcons.search),
             ),
+            label: 'Buscar',
           ),
           BottomNavigationBarItem(
-            // A CORREÇÃO ESTÁ AQUI: Envolvemos o Ícone com Padding.
             icon: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: const Icon(CupertinoIcons.chart_bar_alt_fill),
+              padding: EdgeInsets.only(top: 8.0),
+              child: Icon(CupertinoIcons.square_grid_2x2),
             ),
+            label: 'PhatoBot',
+          ),
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: Icon(CupertinoIcons.person),
+            ),
+            label: 'Perfil',
           ),
         ],
       ),

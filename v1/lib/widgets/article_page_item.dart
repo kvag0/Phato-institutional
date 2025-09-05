@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import '../core/theme/app_theme.dart';
 import '../models/article.dart';
-import '../pages/article_detail_page.dart';
+import '../screens/article_detail_screen.dart';
 
 class ArticlePageItem extends StatelessWidget {
   final Article article;
@@ -14,7 +14,7 @@ class ArticlePageItem extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           CupertinoPageRoute(
-            builder: (context) => ArticleDetailPage(article: article),
+            builder: (context) => ArticleDetailScreen(article: article),
           ),
         );
       },

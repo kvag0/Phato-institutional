@@ -1,17 +1,15 @@
-// CÓDIGO ATUALIZADO para: lib/widgets/chat_bubble.dart
-
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:phato_prototype/core/theme/app_theme.dart';
 
 enum MessageSender { user, bot }
 
 class ChatBubble extends StatefulWidget {
-  // AGORA ACEITA UM WIDGET, NÃO APENAS TEXTO
   final Widget child;
   final MessageSender sender;
 
   const ChatBubble({
     super.key,
-    required this.child, // MUDANÇA AQUI
+    required this.child,
     required this.sender,
   });
 
@@ -19,7 +17,8 @@ class ChatBubble extends StatefulWidget {
   State<ChatBubble> createState() => _ChatBubbleState();
 }
 
-class _ChatBubbleState extends State<ChatBubble> with SingleTickerProviderStateMixin {
+class _ChatBubbleState extends State<ChatBubble>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -46,11 +45,11 @@ class _ChatBubbleState extends State<ChatBubble> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final bool isUser = widget.sender == MessageSender.user;
-    final Color bubbleColor = isUser
-        ? Theme.of(context).cardTheme.color!
-        : Theme.of(context).colorScheme.primary;
+    final Color bubbleColor =
+        isUser ? AppTheme.phatoGray : AppTheme.phatoYellow;
 
-    final Alignment alignment = isUser ? Alignment.centerRight : Alignment.centerLeft;
+    final Alignment alignment =
+        isUser ? Alignment.centerRight : Alignment.centerLeft;
 
     final BorderRadius borderRadius = BorderRadius.only(
       topLeft: const Radius.circular(16.0),
@@ -73,8 +72,7 @@ class _ChatBubbleState extends State<ChatBubble> with SingleTickerProviderStateM
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.75,
           ),
-          // EXIBE O WIDGET FILHO DIRETAMENTE
-          child: widget.child, // MUDANÇA AQUI
+          child: widget.child,
         ),
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:phato_prototype/screens/article_detail_screen.dart';
 import '../core/theme/app_theme.dart';
 import '../models/article.dart';
-import '../pages/article_detail_page.dart';
 
 /// Um card compacto para exibir um artigo numa lista de resultados de busca.
 class ArticleCard extends StatelessWidget {
@@ -15,7 +15,7 @@ class ArticleCard extends StatelessWidget {
       onPressed: () {
         Navigator.of(context).push(
           CupertinoPageRoute(
-            builder: (context) => ArticleDetailPage(article: article),
+            builder: (context) => ArticleDetailScreen(article: article),
           ),
         );
       },

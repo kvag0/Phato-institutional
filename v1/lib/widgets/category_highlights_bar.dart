@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import '../core/theme/app_theme.dart';
+import 'package:phato_prototype/core/theme/app_theme.dart';
 
 class CategoryHighlightsBar extends StatelessWidget {
   const CategoryHighlightsBar({super.key});
 
-  // Lista de categorias estática para fins de layout.
   final List<String> _highlightTitles = const [
     'Economia',
     'Política',
@@ -15,9 +14,8 @@ class CategoryHighlightsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 110,
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _highlightTitles.length + 1, // +1 para o botão "Adicionar"
@@ -27,8 +25,8 @@ class CategoryHighlightsBar extends StatelessWidget {
             return _buildAddItem();
           }
           final title = _highlightTitles[index - 1];
-          // A borda está aqui apenas para fins visuais, sem lógica de seleção.
-          return _buildHighlightItem(title, hasBorder: true);
+          return _buildHighlightItem(title,
+              hasBorder: index == 1); // Simula o primeiro item selecionado
         },
       ),
     );
@@ -37,14 +35,18 @@ class CategoryHighlightsBar extends StatelessWidget {
   Widget _buildAddItem() {
     return _buildBaseHighlight(
       title: 'Adicionar',
-      child: const Icon(
-        CupertinoIcons.add,
-        color: AppTheme.phatoTextGray,
-        size: 32,
+      child: Container(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppTheme.phatoCardGray,
+        ),
+        child: const Icon(
+          CupertinoIcons.add,
+          color: AppTheme.phatoTextGray,
+          size: 32,
+        ),
       ),
-      onTap: () {
-        /* Sem ação por agora */
-      },
+      onTap: () {},
     );
   }
 
@@ -53,15 +55,16 @@ class CategoryHighlightsBar extends StatelessWidget {
       title: title,
       child: Container(
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: hasBorder
-              ? Border.all(color: AppTheme.phatoYellow, width: 2.5)
-              : null,
-        ),
+            shape: BoxShape.circle,
+            border: hasBorder
+                ? Border.all(color: AppTheme.phatoYellow, width: 2.5)
+                : null,
+            image: const DecorationImage(
+              image: NetworkImage('https://placehold.co/140x140/2a2a2a/2a2a2a'),
+              fit: BoxFit.cover,
+            )),
       ),
-      onTap: () {
-        /* Sem ação por agora */
-      },
+      onTap: () {},
     );
   }
 

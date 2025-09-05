@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import '../core/theme/app_theme.dart';
-import '../models/article.dart';
-import '../pages/article_detail_page.dart'; // 1. Importe a página de detalhes.
+import 'package:phato_prototype/core/theme/app_theme.dart';
+import 'package:phato_prototype/models/article.dart';
+import 'package:phato_prototype/screens/article_detail_screen.dart';
 
-/// Representa uma única página de notícia no formato de story/ecrã inteiro.
+/// Representa uma única página de notícia no formato de story/tela inteira.
 class ArticleStoryItem extends StatelessWidget {
   final Article article;
 
@@ -11,13 +11,11 @@ class ArticleStoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 2. Envolvemos o nosso Container com um GestureDetector.
     return GestureDetector(
       onTap: () {
-        // 3. Adicionamos a lógica de navegação para a página de detalhes.
         Navigator.of(context).push(
           CupertinoPageRoute(
-            builder: (context) => ArticleDetailPage(article: article),
+            builder: (context) => ArticleDetailScreen(article: article),
           ),
         );
       },
@@ -64,7 +62,7 @@ class ArticleStoryItem extends StatelessWidget {
               article.title,
               style: AppTheme.headlineStyle.copyWith(
                 fontSize: 26,
-                color: AppTheme.phatoTextGray,
+                color: AppTheme.phatoLightGray,
               ),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
