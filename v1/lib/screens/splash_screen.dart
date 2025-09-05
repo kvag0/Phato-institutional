@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:phato_mvp/screens/auth_checker.dart'; // Importe o AuthChecker
+import 'package:phato_prototype/core/theme/app_theme.dart';
+import 'package:phato_prototype/screens/initial_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,7 +10,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -18,10 +20,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2), // Duração da animação
+      duration: const Duration(seconds: 2),
     );
 
-    // Animação de opacidade para um fade-in
     _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
@@ -29,13 +30,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       ),
     );
 
-    _controller.forward(); // Inicia a animação
+    _controller.forward();
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        // Quando a animação terminar, navega para a tela principal (AuthChecker)
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const AuthChecker()),
+          CupertinoPageRoute(builder: (context) => const InitialScreen()),
         );
       }
     });
@@ -43,16 +43,16 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   void dispose() {
-    _controller.dispose(); // Libera o controller da animação
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor, // Fundo preto do app
-      body: Center(
-        child: FadeTransition( // Aplica a animação de fade-in
+    return CupertinoPageScaffold(
+      backgroundColor: AppTheme.phatoBlack,
+      child: Center(
+        child: FadeTransition(
           opacity: _animation,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -60,14 +60,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               Text(
                 'Phato',
                 style: GoogleFonts.anton(
-                  fontSize: 60, // Tamanho maior para o logo no splash
+                  fontSize: 60,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary, // Amarelo Phato
+                  color: AppTheme.phatoYellow,
                 ),
               ),
               const SizedBox(height: 16),
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary), // Cor do spinner
+              const CupertinoActivityIndicator(
+                color: AppTheme.phatoYellow,
               ),
             ],
           ),

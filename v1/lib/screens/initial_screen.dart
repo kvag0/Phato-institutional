@@ -1,56 +1,48 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart'; // Para a fonte Anton
-import 'package:phato_mvp/services/auth_service.dart'; // Para autenticação de visitante
-import 'package:phato_mvp/screens/login_screen.dart'; // Para navegar para Login
-import 'package:phato_mvp/screens/registration_chat_screen.dart'; // ADICIONE ESTA LINHA
+import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:phato_prototype/core/theme/app_theme.dart';
+import 'package:phato_prototype/screens/home_screen.dart';
+import 'package:phato_prototype/screens/login_screen.dart';
+import 'package:phato_prototype/screens/registration_chat_screen.dart';
 
-class InitialScreen extends ConsumerWidget {
+class InitialScreen extends StatelessWidget {
   const InitialScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authService = ref.read(authServiceProvider);
-
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary, // Fundo amarelo Phato
-      body: Center(
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      backgroundColor: AppTheme.phatoYellow, // Fundo amarelo Phato
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Logo "Phato"
             Text(
               'Phato',
-              style: GoogleFonts.anton( // Fonte Anton
-                fontSize: 80, // Tamanho grande
+              style: GoogleFonts.anton(
+                fontSize: 80,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onPrimary, // Cor preta Phato
+                color: AppTheme.phatoBlack,
               ),
             ),
-            const SizedBox(height: 100), // Espaçamento entre logo e botões
+            const SizedBox(height: 100),
 
             // Botão "Criar Conta"
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
-              child: OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  side: BorderSide(color: Theme.of(context).colorScheme.onPrimary, width: 2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  // Remova a linha foregroundColor: Theme.of(context).colorScheme.onPrimary, se quiser que a cor seja definida diretamente no Text
-                ),
+              child: CupertinoButton(
+                color: AppTheme.phatoYellow,
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const RegistrationChatScreen()), // MUDE AQUI
+                    CupertinoPageRoute(
+                        builder: (context) => const RegistrationChatScreen()),
                   );
                 },
                 child: Text(
                   'CRIAR CONTA',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  style: AppTheme.bodyTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimary, // AJUSTE AQUI: Garante que o texto seja preto Phato
+                    color: AppTheme.phatoBlack,
                   ),
                 ),
               ),
@@ -59,25 +51,20 @@ class InitialScreen extends ConsumerWidget {
 
             // Botão "Entrar"
             SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8, // 80% da largura da tela
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  backgroundColor: Theme.of(context).colorScheme.onPrimary, // Fundo preto
-                  foregroundColor: Theme.of(context).colorScheme.primary, // Texto amarelo
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30), // Bordas arredondadas
-                  ),
-                ),
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: CupertinoButton(
+                color: AppTheme.phatoBlack,
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => LoginScreen()), // Leva para a tela de login
+                    CupertinoPageRoute(
+                        builder: (context) => const LoginScreen()),
                   );
                 },
                 child: Text(
                   'ENTRAR',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  style: AppTheme.bodyTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: AppTheme.phatoYellow,
                   ),
                 ),
               ),
@@ -85,21 +72,17 @@ class InitialScreen extends ConsumerWidget {
             const SizedBox(height: 32),
 
             // Link "Entrar como Visitante"
-            TextButton(
-              onPressed: () async {
-                try {
-                  await authService.signInAnonymously();
-                  // Após o login anônimo, o AuthChecker deve redirecionar para a HomeScreen
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Erro ao entrar como visitante: ${e.toString().split('] ').last}')),
-                  );
-                }
+            CupertinoButton(
+              onPressed: () {
+                // Navega diretamente para a home
+                Navigator.of(context).pushReplacement(
+                  CupertinoPageRoute(builder: (context) => const HomeScreen()),
+                );
               },
               child: Text(
                 'Entrar como Visitante',
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8), // Texto preto com opacidade
+                style: AppTheme.bodyTextStyle.copyWith(
+                  color: AppTheme.phatoBlack.withOpacity(0.8),
                   decoration: TextDecoration.underline,
                 ),
               ),
