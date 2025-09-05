@@ -99,7 +99,7 @@ class LoginScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(CupertinoIcons.app,
+                        const Icon(CupertinoIcons.app_fill,
                             color: AppTheme.phatoBlack),
                         const SizedBox(width: 10),
                         Text(

@@ -24,7 +24,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
           'A rápida evolução dos modelos de inteligência artificial generativa está a causar uma disrupção significativa em múltiplas indústrias...',
       description:
           'Novos modelos de IA estão a criar arte, música e texto com uma qualidade sem precedentes, levantando questões sobre o futuro da criatividade humana.',
-      imageUrl: 'https://placehold.co/600x800/0d0d0d/FFFFFF?text=IA+Generativa',
+      imageUrl: 'assets/noticia1.png',
       fetchedAt: DateTime.now(),
       tags: ['ia', 'tecnologia', 'criatividade'],
       createdAt: DateTime.now(),
@@ -63,7 +63,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
           'Após semanas de negociações intensas, a cimeira climática global concluiu com um acordo considerado histórico...',
       description:
           'Líderes mundiais concordam em metas mais rígidas para a redução de gases de efeito estufa.',
-      imageUrl: 'https://placehold.co/600x800/1E40AF/FFFFFF?text=Cimeira+Clima',
+      imageUrl: 'assets/noticia2.png',
       fetchedAt: DateTime.now(),
       tags: ['clima', 'sustentabilidade', 'política'],
       createdAt: DateTime.now(),
@@ -81,7 +81,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
           'Os mercados financeiros globais registaram uma volatilidade acrescida após a divulgação dos últimos dados da inflação...',
       description:
           'Investidores mostram-se cautelosos após a divulgação de números da inflação acima do esperado.',
-      imageUrl: 'https://placehold.co/600x800/B91C1C/FFFFFF?text=Mercado+Ações',
+      imageUrl: 'assets/noticia3.png',
       fetchedAt: DateTime.now(),
       tags: ['economia', 'inflação', 'mercado financeiro'],
       createdAt: DateTime.now(),
@@ -99,7 +99,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
           'A comunidade científica celebra a chegada bem-sucedida da sonda "Juno II" à órbita de Júpiter...',
       description:
           'A sonda "Juno II" entrou com sucesso na órbita de Júpiter e começa a enviar as primeiras imagens.',
-      imageUrl: 'https://placehold.co/600x800/4A044E/FFFFFF?text=Sonda+Júpiter',
+      imageUrl: 'assets/noticia4.png',
       fetchedAt: DateTime.now(),
       tags: ['espaço', 'ciência', 'astronomia'],
       createdAt: DateTime.now(),
@@ -117,7 +117,7 @@ class _FeedTabPageState extends State<FeedTabPage> {
           'A final do campeonato nacional de futebol foi um verdadeiro espetáculo de emoções, decidido apenas nos últimos momentos...',
       description:
           'Uma reviravolta nos últimos minutos de jogo garantiu a vitória inesperada à equipa visitante.',
-      imageUrl: 'https://placehold.co/600x800/047857/FFFFFF?text=Final+Futebol',
+      imageUrl: 'assets/noticia5.png',
       fetchedAt: DateTime.now(),
       tags: ['futebol', 'desporto', 'campeonato'],
       createdAt: DateTime.now(),

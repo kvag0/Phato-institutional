@@ -25,7 +25,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   
-  # Adicione seus assets aqui
-  # assets:
-  #   - assets/animations/typing.json
-  #   - assets/google_logo.png
+  assets:
+    - assets/
