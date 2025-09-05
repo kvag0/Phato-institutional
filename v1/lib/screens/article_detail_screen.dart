@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:phato_prototype/core/theme/app_theme.dart';
 import 'package:phato_prototype/models/article.dart';
 import 'package:phato_prototype/screens/phatobot_screen.dart';
@@ -11,7 +10,8 @@ class ArticleDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DateFormat formatter = DateFormat('d MMMM yyyy', 'pt_BR');
+    // A CORREÇÃO ESTÁ AQUI: Obtemos as informações sobre a área segura do ecrã.
+    final safeArea = MediaQuery.of(context).padding;
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -19,30 +19,33 @@ class ArticleDetailScreen extends StatelessWidget {
           article.source.name,
           style: AppTheme.secondaryTextStyle.copyWith(fontSize: 16),
         ),
-        leading: const CupertinoNavigationBarBackButton(),
+        leading: CupertinoNavigationBarBackButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: () {},
               child: const Icon(CupertinoIcons.bookmark,
                   color: AppTheme.phatoTextGray),
+              onPressed: () {},
             ),
             CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: () {},
               child: const Icon(CupertinoIcons.share,
                   color: AppTheme.phatoTextGray),
+              onPressed: () {},
             ),
           ],
         ),
       ),
       child: Stack(
         children: [
-          SafeArea(
+          Positioned.fill(
             child: ListView(
-              padding: const EdgeInsets.only(bottom: 80), // Espaço para o botão
               children: [
                 if (article.imageUrl != null && article.imageUrl!.isNotEmpty)
                   Image.network(
@@ -59,53 +62,49 @@ class ArticleDetailScreen extends StatelessWidget {
                       Text(article.title, style: AppTheme.headlineStyle),
                       const SizedBox(height: 8),
                       Text(
-                        'Por ${article.author ?? article.source.name} - ${formatter.format(article.publishedAt)}',
+                        'Por ${article.author ?? article.source.name} - ${article.publishedAt.day}/${article.publishedAt.month}/${article.publishedAt.year}',
                         style:
                             AppTheme.secondaryTextStyle.copyWith(fontSize: 14),
                       ),
+                      const SizedBox(height: 16),
+                      Text(
+                        article.content ?? 'Conteúdo não disponível.',
+                        style: AppTheme.bodyTextStyle.copyWith(
+                          fontSize: 16,
+                          height: 1.5,
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       if (article.analysis != null)
-                        _buildAnalysisSection(article.analysis!)
-                      else
-                        Container(
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                            color: AppTheme.phatoCardGray,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            'A análise para este artigo ainda não está disponível.',
-                            style: AppTheme.bodyTextStyle,
-                          ),
-                        ),
-                      const SizedBox(height: 24),
-                      Text(
-                        article.content ?? 'Conteúdo do artigo não disponível.',
-                        style: AppTheme.bodyTextStyle.copyWith(height: 1.5),
-                      ),
+                        _buildAnalysisSection(article.analysis!),
+                      const SizedBox(height: 120), // Espaço para o botão
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          // Botão flutuante do PhatoBot
           Positioned(
-            bottom: 20,
+            // A CORREÇÃO CONTINUA AQUI: Adicionamos o `safeArea.bottom` à
+            // posição do botão. Isto garante que ele flutue acima da barra
+            // de navegação do sistema (home indicator).
+            bottom: 20 + safeArea.bottom,
+            left: 20,
             right: 20,
             child: CupertinoButton(
               color: AppTheme.phatoYellow,
-              borderRadius: BorderRadius.circular(30),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              borderRadius: BorderRadius.circular(30.0),
+              padding: const EdgeInsets.symmetric(vertical: 16),
               onPressed: () {
                 Navigator.of(context).push(
                   CupertinoPageRoute(
-                    builder: (context) => PhatoBotScreen(article: article),
+                    builder: (context) =>
+                        PhatoBotScreen(articleContext: article),
                   ),
                 );
               },
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(CupertinoIcons.chat_bubble_2_fill,
                       color: AppTheme.phatoBlack),
@@ -113,14 +112,13 @@ class ArticleDetailScreen extends StatelessWidget {
                   Text(
                     'Perguntar ao PhatoBot',
                     style: AppTheme.bodyTextStyle.copyWith(
-                      color: AppTheme.phatoBlack,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        color: AppTheme.phatoBlack,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -160,7 +158,7 @@ class ArticleDetailScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildFactRow(CupertinoIcons.group, 'Quem:', facts.who.join(', ')),
+        _buildFactRow(CupertinoIcons.person_3, 'Quem:', facts.who.join(', ')),
         _buildFactRow(CupertinoIcons.doc_text, 'O quê:', facts.what),
         _buildFactRow(CupertinoIcons.calendar, 'Quando:', facts.when),
         _buildFactRow(CupertinoIcons.location, 'Onde:', facts.where.join(', ')),

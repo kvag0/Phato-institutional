@@ -1,41 +1,51 @@
 import 'package:flutter/cupertino.dart';
-import 'package:phato_prototype/core/theme/app_theme.dart';
 import 'package:phato_prototype/screens/feed_tab_screen.dart';
 import 'package:phato_prototype/screens/phatobot_screen.dart';
+import 'package:phato_prototype/screens/search_screen.dart';
 import 'package:phato_prototype/screens/user_profile_screen.dart';
+import '../core/theme/app_theme.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  // CORREÇÃO: A classe de estado agora é pública (HomeScreenState)
+  // para que outros widgets possam aceder ao seu `tabController`.
+  State<HomeScreen> createState() => HomeScreenState();
+}
+
+// A classe de estado agora é pública.
+class HomeScreenState extends State<HomeScreen> {
+  late CupertinoTabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = CupertinoTabController();
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoTabScaffold(
+      controller: tabController,
       tabBuilder: (BuildContext context, int index) {
         switch (index) {
-          case 0: // Aba "Feed"
-            return CupertinoTabView(
-              builder: (context) {
-                return const FeedTabScreen();
-              },
-            );
-          case 1: // Aba "PhatoBot"
-            return CupertinoTabView(
-              builder: (context) {
-                return const PhatoBotScreen();
-              },
-            );
-          case 2: // Aba "Perfil"
-            return CupertinoTabView(
-              builder: (context) {
-                return const UserProfileScreen();
-              },
-            );
+          case 0: // Feed
+            return const FeedTabPage();
+          case 1: // Pesquisa
+            return const SearchScreen();
+          case 2: // PhatoBot
+            return const PhatoBotScreen();
+          case 3: // Perfil
+            return const UserProfileScreen();
           default:
-            return CupertinoTabView(
-              builder: (context) {
-                return const FeedTabScreen();
-              },
-            );
+            return const FeedTabPage();
         }
       },
       tabBar: CupertinoTabBar(
@@ -53,13 +63,19 @@ class HomeScreen extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Padding(
               padding: EdgeInsets.only(top: 8.0),
+              child: Icon(CupertinoIcons.search),
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: EdgeInsets.only(top: 8.0),
               child: Icon(CupertinoIcons.square_grid_2x2),
             ),
           ),
           BottomNavigationBarItem(
             icon: Padding(
               padding: EdgeInsets.only(top: 8.0),
-              child: Icon(CupertinoIcons.graph_circle),
+              child: Icon(CupertinoIcons.person),
             ),
           ),
         ],

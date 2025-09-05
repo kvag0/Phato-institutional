@@ -14,7 +14,7 @@ class ChatMessage {
 class PhatoBotScreen extends StatefulWidget {
   final Article? article;
 
-  const PhatoBotScreen({super.key, this.article});
+  const PhatoBotScreen({super.key, this.article, Article? articleContext});
 
   @override
   State<PhatoBotScreen> createState() => _PhatoBotScreenState();

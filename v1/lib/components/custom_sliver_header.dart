@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:phato_prototype/screens/search_screen.dart';
-import 'package:phato_prototype/screens/user_profile_screen.dart';
 import '../core/theme/app_theme.dart';
+import '../screens/home_screen.dart'; // Import necessário para aceder a HomeScreenState
 import '../widgets/category_highlights_bar.dart';
 import 'feed_filter_toggle.dart';
 import 'welcome_header.dart';
@@ -21,15 +21,8 @@ class CustomSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    // Calcula o progresso do scroll de 0.0 (totalmente expandido) a 1.0 (totalmente encolhido).
     final progress = (shrinkOffset / (maxHeight - minHeight)).clamp(0.0, 1.0);
-
-    // Anima a opacidade do conteúdo que desaparece (saudação, highlights, etc.).
-    // O fade-out é rápido, terminando a meio do scroll.
     final contentOpacity = (1.0 - (progress * 2)).clamp(0.0, 1.0);
-
-    // Anima a opacidade dos filtros que aparecem no cabeçalho fixo.
-    // Eles só começam a aparecer depois de o scroll ter avançado 50%.
     final headerFilterOpacity = ((progress - 0.5) * 2).clamp(0.0, 1.0);
 
     return Container(
@@ -37,31 +30,32 @@ class CustomSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // --- CAMADA DE FUNDO (Conteúdo que desaparece com o scroll) ---
+          // Conteúdo que desaparece
           Positioned(
-            // Começa a ser desenhado abaixo da área do cabeçalho fixo.
-            top: minHeight - MediaQuery.of(context).padding.top,
+            top: minHeight,
             left: 0,
             right: 0,
-            child: Opacity(
-              opacity: contentOpacity,
-              // Usamos 'IgnorePointer' para que o utilizador não consiga tocar
-              // nestes widgets quando eles estão invisíveis.
-              child: IgnorePointer(
-                ignoring: contentOpacity == 0.0,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    WelcomeHeader(),
-                    const CategoryHighlightsBar(),
-                    const FeedFilterToggle(),
-                  ],
+            child: SingleChildScrollView(
+              physics:
+                  const NeverScrollableScrollPhysics(), // Impede o scroll manual
+              child: Opacity(
+                opacity: contentOpacity,
+                child: IgnorePointer(
+                  ignoring: contentOpacity == 0.0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      WelcomeHeader(),
+                      const CategoryHighlightsBar(),
+                      const FeedFilterToggle(),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
 
-          // --- CAMADA DA FRENTE (Cabeçalho fixo e animado) ---
+          // Cabeçalho fixo
           Positioned(
             top: 0,
             left: 0,
@@ -74,15 +68,13 @@ class CustomSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                 left: 16,
                 right: 16,
               ),
-              // Usamos um Stack para garantir o alinhamento simétrico.
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // CAMADA 1: Logo e Ícones nos cantos.
+                  // Logo e Ícones
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Contentor do Logo (à esquerda) com largura fixa.
                       SizedBox(
                         width: 90,
                         child: Align(
@@ -90,7 +82,6 @@ class CustomSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                           child: Text('Phato', style: AppTheme.logoStyle),
                         ),
                       ),
-                      // Contentor dos Ícones (à direita) com a mesma largura.
                       SizedBox(
                         width: 90,
                         child: Row(
@@ -99,7 +90,6 @@ class CustomSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                             CupertinoButton(
                               padding: const EdgeInsets.all(4.0),
                               onPressed: () {
-                                // NAVEGAÇÃO PARA A PÁGINA DE BUSCA
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
                                     builder: (context) => const SearchScreen(),
@@ -113,14 +103,12 @@ class CustomSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                             ),
                             CupertinoButton(
                               padding: const EdgeInsets.all(4.0),
+                              // CORREÇÃO: A lógica agora procura pelo estado público `HomeScreenState`
+                              // para encontrar o controlador e mudar de aba programaticamente.
                               onPressed: () {
-                                // NAVEGAÇÃO PARA A PÁGINA DE USUARIO
-                                Navigator.of(context).push(
-                                  CupertinoPageRoute(
-                                    builder: (context) =>
-                                        const UserProfileScreen(),
-                                  ),
-                                );
+                                final homeScreenState = context
+                                    .findAncestorStateOfType<HomeScreenState>();
+                                homeScreenState?.tabController.index = 3;
                               },
                               child: const Icon(
                                 CupertinoIcons.person,
@@ -133,7 +121,7 @@ class CustomSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                     ],
                   ),
 
-                  // CAMADA 2: Filtros que aparecem no centro absoluto.
+                  // Filtros que aparecem
                   Opacity(
                     opacity: headerFilterOpacity,
                     child: const FeedFilterToggle(),
@@ -147,16 +135,12 @@ class CustomSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
-  // A altura máxima do nosso cabeçalho (quando está totalmente expandido).
   @override
   double get maxExtent => maxHeight;
 
-  // A altura mínima do nosso cabeçalho (quando está totalmente encolhido).
   @override
   double get minExtent => minHeight;
 
-  // Informa o Flutter para reconstruir o widget a cada frame do scroll
-  // para que a nossa animação seja fluida.
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return true;
