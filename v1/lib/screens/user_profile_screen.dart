@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:phato_prototype/core/theme/app_theme.dart';
 import 'package:phato_prototype/models/topic.dart';
 import 'package:phato_prototype/models/usuario.dart';
@@ -33,39 +31,19 @@ final List<Topic> mockTopics = [
   Topic(
       nome: 'Tecnologia',
       chave: 'tecnologia',
-      icon: CupertinoIcons.desktopcomputer,
-      id: '',
-      icone: ''),
+      icon: CupertinoIcons.desktopcomputer),
   Topic(
       nome: 'Economia',
       chave: 'economia',
-      icon: CupertinoIcons.money_dollar_circle,
-      id: '',
-      icone: ''),
+      icon: CupertinoIcons.money_dollar_circle),
+  Topic(nome: 'Ciência', chave: 'ciencia', icon: CupertinoIcons.lab_flask),
   Topic(
-      nome: 'Ciência',
-      chave: 'ciencia',
-      icon: CupertinoIcons.lab_flask,
-      id: '',
-      icone: ''),
-  Topic(
-      nome: 'Política',
-      chave: 'politica',
-      icon: CupertinoIcons.person_3_fill,
-      id: '',
-      icone: ''),
-  Topic(
-      nome: 'Esportes',
-      chave: 'esportes',
-      icon: CupertinoIcons.sportscourt,
-      id: '',
-      icone: ''),
+      nome: 'Política', chave: 'politica', icon: CupertinoIcons.person_3_fill),
+  Topic(nome: 'Esportes', chave: 'esportes', icon: CupertinoIcons.sportscourt),
   Topic(
       nome: 'Meio Ambiente',
       chave: 'meio_ambiente',
-      icon: CupertinoIcons.leaf_arrow_circlepath,
-      id: '',
-      icone: ''),
+      icon: CupertinoIcons.leaf_arrow_circlepath),
 ];
 
 class UserProfileScreen extends StatefulWidget {
@@ -74,106 +52,121 @@ class UserProfileScreen extends StatefulWidget {
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  int _selectedSegment = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+  final Map<int, Widget> _segmentTabs = const {
+    0: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Text('ESTATÍSTICAS')),
+    1: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8), child: Text('CONQUISTAS')),
+    2: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8), child: Text('ATIVIDADE')),
+  };
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+      child: CustomScrollView(
+        slivers: [
           const CupertinoSliverNavigationBar(
             largeTitle: Text('Perfil'),
-          ),
-          SliverToBoxAdapter(child: _buildHeader(context, mockUser)),
-          SliverPersistentHeader(
-            delegate: _SliverAppBarDelegate(
-              CupertinoTabBar(
-                currentIndex: _tabController.index,
-                onTap: (index) {
-                  setState(() {
-                    _tabController.index = index;
-                  });
-                },
-                items: const [
-                  BottomNavigationBarItem(
-                      label: 'ESTATÍSTICAS',
-                      icon: Icon(CupertinoIcons.chart_bar_square)),
-                  BottomNavigationBarItem(
-                      label: 'CONQUISTAS', icon: Icon(CupertinoIcons.rosette)),
-                  BottomNavigationBarItem(
-                      label: 'ATIVIDADE', icon: Icon(CupertinoIcons.bell)),
-                ],
-              ),
+            trailing: CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: Icon(CupertinoIcons.settings),
+              onPressed:
+                  null, // Ação de configurações desabilitada no protótipo
             ),
-            pinned: true,
-          )
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                _buildHeader(context, mockUser),
+                const SizedBox(height: 24),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: CupertinoSlidingSegmentedControl<int>(
+                      groupValue: _selectedSegment,
+                      children: _segmentTabs,
+                      onValueChanged: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _selectedSegment = value;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _buildTabView(),
+              ],
+            ),
+          ),
         ],
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            _buildStatsTab(context, mockUser, mockTopics),
-            const Center(child: Text("Conquistas")),
-            const Center(child: Text("Atividade")),
-          ],
-        ),
       ),
     );
   }
 
+  Widget _buildTabView() {
+    switch (_selectedSegment) {
+      case 1:
+        return const Center(child: Text("Emblemas e conquistas aqui."));
+      case 2:
+        return const Center(child: Text("Histórico de atividades aqui."));
+      case 0:
+      default:
+        return _buildStatsTab(context, mockUser, mockTopics);
+    }
+  }
+
   Widget _buildHeader(BuildContext context, Usuario usuario) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: AppTheme.phatoGray,
-            backgroundImage: NetworkImage(usuario.imageUrl!),
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppTheme.phatoGray,
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(usuario.imageUrl!),
+            ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                usuario.nome ?? 'Utilizador Phato',
-                style: AppTheme.headlineStyle.copyWith(fontSize: 22),
-              ),
-              if (usuario.subscription == 'Pro') ...[
-                const SizedBox(width: 8),
-                const Icon(CupertinoIcons.checkmark_seal_fill,
-                    color: AppTheme.phatoYellow, size: 22)
-              ]
-            ],
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              usuario.nome ?? 'Utilizador Phato',
+              style: AppTheme.headlineStyle.copyWith(fontSize: 22),
+            ),
+            if (usuario.subscription == 'Pro') ...[
+              const SizedBox(width: 8),
+              const Icon(CupertinoIcons.checkmark_seal_fill,
+                  color: AppTheme.phatoYellow, size: 22)
+            ]
+          ],
+        ),
+      ],
     );
   }
 
   Widget _buildStatsTab(
       BuildContext context, Usuario usuario, List<Topic> allTopics) {
-    // Lógica para separar os tópicos
     final totalArticlesRead = usuario.stats['articlesRead'] ?? 0;
     final List<Topic> strongInterests = [];
     final List<Topic> topicsToExplore = [];
 
     for (var topic in allTopics) {
       final count = usuario.topicReadCounts[topic.chave] ?? 0;
-      if (count > 0) {
+      if (count > 0 && totalArticlesRead > 0) {
         if ((count / totalArticlesRead) >= 0.10) {
           strongInterests.add(topic);
         } else {
@@ -182,22 +175,34 @@ class _UserProfileScreenState extends State<UserProfileScreen>
       }
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Seus Interesses",
               style: AppTheme.headlineStyle.copyWith(fontSize: 20)),
           const SizedBox(height: 12),
-          ...strongInterests.map((topic) => _buildTopicInterestRow(context,
-              topic, usuario.topicReadCounts[topic.chave]!, totalArticlesRead)),
+          if (strongInterests.isEmpty)
+            const Text("Leia mais para definirmos seus interesses!")
+          else
+            ...strongInterests.map((topic) => _buildTopicInterestRow(
+                context,
+                topic,
+                usuario.topicReadCounts[topic.chave]!,
+                totalArticlesRead)),
           const SizedBox(height: 32),
           Text("Tópicos a Explorar",
               style: AppTheme.headlineStyle.copyWith(fontSize: 20)),
           const SizedBox(height: 12),
-          ...topicsToExplore.map((topic) => _buildTopicInterestRow(context,
-              topic, usuario.topicReadCounts[topic.chave]!, totalArticlesRead)),
+          if (topicsToExplore.isEmpty)
+            const Text("Você já leu sobre todos os tópicos!")
+          else
+            ...topicsToExplore.map((topic) => _buildTopicInterestRow(
+                context,
+                topic,
+                usuario.topicReadCounts[topic.chave]!,
+                totalArticlesRead)),
         ],
       ),
     );
@@ -229,32 +234,26 @@ class _UserProfileScreenState extends State<UserProfileScreen>
             ],
           ),
           const SizedBox(height: 12),
-          LinearProgressIndicator(
-            value: progress,
-            backgroundColor: AppTheme.phatoGray,
-            valueColor:
-                const AlwaysStoppedAnimation<Color>(AppTheme.phatoYellow),
-            minHeight: 8,
-          ),
+          // Usando um Container com bordas arredondadas para o progresso
+          Container(
+            height: 8,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: AppTheme.phatoGray,
+            ),
+            child: FractionallySizedBox(
+              widthFactor: progress,
+              alignment: Alignment.centerLeft,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: AppTheme.phatoYellow,
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
   }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-  final CupertinoTabBar _tabBar;
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(color: AppTheme.phatoBlack, child: _tabBar);
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) => false;
 }

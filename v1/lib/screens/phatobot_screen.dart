@@ -141,7 +141,7 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
                 },
               ),
             ),
-            const Divider(height: 1, color: AppTheme.phatoGray),
+            Container(height: 1, color: AppTheme.phatoGray.withOpacity(0.2)),
             _buildMessageInputField(),
           ],
         ),
@@ -152,14 +152,6 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
   Widget _buildMessageRow(ChatMessage message) {
     final isUser = message.sender == MessageSender.user;
 
-    final Widget avatar = CircleAvatar(
-      backgroundColor: isUser ? AppTheme.phatoGray : AppTheme.phatoYellow,
-      child: isUser
-          ? const Icon(CupertinoIcons.person_fill,
-              color: AppTheme.phatoLightGray)
-          : const Text('🤖', style: TextStyle(fontSize: 24)),
-    );
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -167,14 +159,23 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
             isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (!isUser) avatar,
+          if (!isUser)
+            const Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: Text('🤖', style: TextStyle(fontSize: 24)),
+            ),
           Flexible(
             child: ChatBubble(
               sender: message.sender,
               child: message.content,
             ),
           ),
-          if (isUser) avatar,
+          if (isUser)
+            const Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: Icon(CupertinoIcons.person_alt_circle_fill,
+                  size: 28, color: AppTheme.phatoGray),
+            )
         ],
       ),
     );
@@ -187,29 +188,15 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          const CircleAvatar(
-            backgroundColor: AppTheme.phatoYellow,
-            child: Text('🤖', style: TextStyle(fontSize: 24)),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8.0),
-            padding:
-                const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10.0),
-            decoration: const BoxDecoration(
-              color: AppTheme.phatoYellow,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16.0),
-                topRight: Radius.circular(16.0),
-                bottomLeft: Radius.zero,
-                bottomRight: Radius.circular(16.0),
-              ),
-            ),
+          const Text('🤖', style: TextStyle(fontSize: 24)),
+          ChatBubble(
+            sender: MessageSender.bot,
             child: Lottie.asset(
-              'assets/animations/typing.json', // Certifique-se que este asset existe
+              'assets/animations/typing.json',
               width: 50,
-              height: 35,
+              height: 25,
               errorBuilder: (ctx, err, st) =>
-                  const SizedBox(width: 50, height: 35),
+                  const SizedBox(width: 50, height: 25),
             ),
           )
         ],
@@ -229,6 +216,10 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
               placeholder: 'Pergunte algo...',
               style: AppTheme.bodyTextStyle,
               onSubmitted: (_) => _handleSendMessage(),
+              decoration: BoxDecoration(
+                color: AppTheme.phatoCardGray,
+                borderRadius: BorderRadius.circular(18.0),
+              ),
             ),
           ),
           const SizedBox(width: 8.0),

@@ -11,17 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
   
-  # Ícones para o design Cupertino
   cupertino_icons: ^1.0.2
-  
-  # Fontes personalizadas do Google
   google_fonts: ^6.1.0
-  
-  # Para formatação de datas (usado no WelcomeHeader)
   intl: ^0.19.0
-  
-  # Para as animações do PhatoBot
   lottie: ^3.0.0
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:
@@ -29,10 +23,9 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
-  # A linha abaixo é a correção. 'true' está sem aspas.
   uses-material-design: true
-
-  # Se você tiver assets (como imagens ou animações locais), descomente e adicione aqui.
+  
+  # Adicione seus assets aqui
   # assets:
-  #   - assets/animations/
-
+  #   - assets/animations/typing.json
+  #   - assets/google_logo.png
