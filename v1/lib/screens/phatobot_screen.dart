@@ -1,9 +1,8 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:phato_prototype/widgets/chat_bubble.dart';
 import 'package:phato_prototype/core/theme/app_theme.dart';
+import 'package:phato_prototype/models/article.dart';
+import 'package:phato_prototype/widgets/chat_bubble.dart';
 
 class ChatMessage {
   final Widget content;
@@ -13,7 +12,9 @@ class ChatMessage {
 }
 
 class PhatoBotScreen extends StatefulWidget {
-  const PhatoBotScreen({super.key});
+  final Article? article;
+
+  const PhatoBotScreen({super.key, this.article});
 
   @override
   State<PhatoBotScreen> createState() => _PhatoBotScreenState();
@@ -29,18 +30,27 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
   @override
   void initState() {
     super.initState();
-    if (_messages.isEmpty) {
+    if (widget.article != null) {
+      _addInitialArticleMessage();
+    } else if (_messages.isEmpty) {
       _addBotMessage(
-          'Olá! Sou o PhatoBot. Como posso ajudar a desvendar as notícias para você hoje?',
+          'Olá! Sou o PhatoBot. Como posso ajudar a desvendar as notícias para si hoje?',
           delay: 500);
     }
   }
 
-  @override
-  void dispose() {
-    _messageController.dispose();
-    _scrollController.dispose();
-    super.dispose();
+  void _addInitialArticleMessage() {
+    final article = widget.article!;
+    final initialMessage = ChatMessage(
+      sender: MessageSender.user, // Representa o contexto do utilizador
+      content: _ArticleQuestionCard(article: article),
+    );
+    setState(() {
+      _messages.add(initialMessage);
+    });
+    _addBotMessage(
+        'Vejo que está a ler sobre "${article.title}". O que gostaria de saber especificamente?',
+        delay: 500);
   }
 
   void _handleSendMessage() {
@@ -51,10 +61,7 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
 
     final userMessageContent = Text(
       text,
-      style: GoogleFonts.quicksand(
-        fontSize: 15,
-        color: AppTheme.phatoLightGray,
-      ),
+      style: AppTheme.bodyTextStyle.copyWith(color: AppTheme.phatoTextGray),
     );
 
     setState(() {
@@ -68,13 +75,13 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
     });
     _scrollToBottom();
 
-    // Simulação de resposta do bot
+    // Simula a resposta do bot
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
       setState(() {
         _isPhatobotTyping = false;
         _addBotMessage(
-            'Esta é uma resposta padrão do protótipo. A funcionalidade completa do chat será implementada na versão final.',
+            'Esta é uma resposta padrão para a sua pergunta sobre "$text". Num protótipo funcional, eu analisaria o artigo e dar-lhe-ia uma resposta detalhada.',
             delay: 0);
       });
     });
@@ -84,22 +91,8 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
     Future.delayed(Duration(milliseconds: delay), () {
       if (!mounted) return;
       setState(() {
-        final animatedText = AnimatedTextKit(
-          animatedTexts: [
-            TypewriterAnimatedText(
-              text,
-              textStyle: GoogleFonts.quicksand(
-                fontSize: 15,
-                color: AppTheme.phatoBlack,
-              ),
-              speed: const Duration(milliseconds: 35),
-            ),
-          ],
-          isRepeatingAnimation: false,
-          totalRepeatCount: 1,
-        );
-        _messages
-            .add(ChatMessage(content: animatedText, sender: MessageSender.bot));
+        final content = Text(text, style: AppTheme.bodyTextStyle);
+        _messages.add(ChatMessage(content: content, sender: MessageSender.bot));
       });
       _scrollToBottom();
     });
@@ -120,7 +113,6 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      backgroundColor: AppTheme.phatoBlack,
       navigationBar: const CupertinoNavigationBar(
         middle: Text('PhatoBot'),
       ),
@@ -141,7 +133,7 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
                 },
               ),
             ),
-            Container(height: 1, color: AppTheme.phatoGray.withOpacity(0.2)),
+            Container(height: 1, color: AppTheme.phatoGray.withOpacity(0.5)),
             _buildMessageInputField(),
           ],
         ),
@@ -152,6 +144,20 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
   Widget _buildMessageRow(ChatMessage message) {
     final isUser = message.sender == MessageSender.user;
 
+    final Widget avatar = Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: isUser
+            ? AppTheme.phatoYellow.withAlpha(50)
+            : AppTheme.phatoCardGray,
+        shape: BoxShape.circle,
+      ),
+      child: isUser
+          ? const Icon(CupertinoIcons.person_fill, color: AppTheme.phatoYellow)
+          : const Center(child: Text('🦆', style: TextStyle(fontSize: 24))),
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -160,9 +166,9 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUser)
-            const Padding(
-              padding: EdgeInsets.only(right: 8.0),
-              child: Text('🤖', style: TextStyle(fontSize: 24)),
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: avatar,
             ),
           Flexible(
             child: ChatBubble(
@@ -171,35 +177,20 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
             ),
           ),
           if (isUser)
-            const Padding(
-              padding: EdgeInsets.only(left: 8.0),
-              child: Icon(CupertinoIcons.person_alt_circle_fill,
-                  size: 28, color: AppTheme.phatoGray),
-            )
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: avatar,
+            ),
         ],
       ),
     );
   }
 
   Widget _buildTypingIndicator() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          const Text('🤖', style: TextStyle(fontSize: 24)),
-          ChatBubble(
-            sender: MessageSender.bot,
-            child: Lottie.asset(
-              'assets/animations/typing.json',
-              width: 50,
-              height: 25,
-              errorBuilder: (ctx, err, st) =>
-                  const SizedBox(width: 50, height: 25),
-            ),
-          )
-        ],
+    return _buildMessageRow(
+      ChatMessage(
+        sender: MessageSender.bot,
+        content: const CupertinoActivityIndicator(),
       ),
     );
   }
@@ -213,20 +204,73 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
           Expanded(
             child: CupertinoTextField(
               controller: _messageController,
-              placeholder: 'Pergunte algo...',
+              placeholder: 'Pergunte-me alguma coisa...',
               style: AppTheme.bodyTextStyle,
               onSubmitted: (_) => _handleSendMessage(),
               decoration: BoxDecoration(
                 color: AppTheme.phatoCardGray,
-                borderRadius: BorderRadius.circular(18.0),
+                borderRadius: BorderRadius.circular(30.0),
               ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             ),
           ),
           const SizedBox(width: 8.0),
           CupertinoButton(
             padding: EdgeInsets.zero,
             onPressed: _handleSendMessage,
-            child: const Icon(CupertinoIcons.arrow_up_circle_fill, size: 32),
+            child: const Icon(CupertinoIcons.arrow_up_circle_fill,
+                size: 32, color: AppTheme.phatoYellow),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Widget para exibir o contexto do artigo no chat
+class _ArticleQuestionCard extends StatelessWidget {
+  final Article article;
+  const _ArticleQuestionCard({required this.article});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: AppTheme.phatoGray.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          if (article.imageUrl != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                article.imageUrl!,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
+            ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'A perguntar sobre:',
+                  style: AppTheme.secondaryTextStyle.copyWith(fontSize: 12),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  article.title,
+                  style: AppTheme.bodyTextStyle
+                      .copyWith(fontWeight: FontWeight.bold),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ],
       ),
