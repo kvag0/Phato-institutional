@@ -33,7 +33,7 @@ class AppTheme {
 
   // Estilos de Texto reutilizáveis
   static final TextStyle logoStyle = GoogleFonts.leagueSpartan(
-    color: phatoLightGray,
+    color: phatoYellow,
     fontSize: 24,
     fontWeight: FontWeight.bold,
   );

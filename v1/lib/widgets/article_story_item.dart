@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:phato_prototype/core/theme/app_theme.dart';
-import 'package:phato_prototype/models/article.dart';
-import 'package:phato_prototype/screens/article_detail_screen.dart';
+import '../models/article.dart';
+import '../core/theme/app_theme.dart';
+import '../screens/article_detail_screen.dart';
 
 class ArticleStoryItem extends StatelessWidget {
   final Article article;
@@ -21,92 +21,111 @@ class ArticleStoryItem extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Camada 1: Imagem de Fundo com Tratamento de Erro
+          // IMAGEM DE FUNDO
           if (article.imageUrl != null && article.imageUrl!.isNotEmpty)
-            Image.network(
+            Image.asset(
               article.imageUrl!,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                return Container(color: AppTheme.phatoBlack);
+                return Container(
+                  color: AppTheme.phatoCardGray,
+                  child: const Center(
+                    child: Icon(
+                      CupertinoIcons.photo,
+                      color: AppTheme.phatoTextGray,
+                      size: 50,
+                    ),
+                  ),
+                );
               },
             )
           else
             Container(color: AppTheme.phatoBlack),
 
-          // Camada 2: Filtro escuro sobre a imagem
+          // GRADIENTE PARA LEGIBILIDADE
           Container(
-            color: AppTheme.phatoBlack.withOpacity(0.5),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppTheme.phatoBlack.withOpacity(0.0),
+                  AppTheme.phatoBlack.withOpacity(0.2),
+                  AppTheme.phatoBlack.withOpacity(0.8),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: const [0.0, 0.5, 1.0],
+              ),
+            ),
           ),
 
-          // Camada 3: Conteúdo de Texto
+          // CONTEÚDO DE TEXTO
           Padding(
-            padding: const EdgeInsets.only(
-                left: 16.0, right: 16.0, top: 100.0, bottom: 150.0),
-            // CORREÇÃO FINAL: Usamos um LayoutBuilder com um SingleChildScrollView
-            // para garantir que o conteúdo se alinhe em baixo e seja rolável
-            // se o espaço for insuficiente, resolvendo o overflow em todos os casos.
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Categoria
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AppTheme.phatoYellow.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                  color: AppTheme.phatoYellow, width: 1),
-                            ),
-                            child: Text(
-                              article.category.toUpperCase(),
-                              style: AppTheme.bodyTextStyle.copyWith(
-                                color: AppTheme.phatoYellow,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-
-                          // Título
-                          Text(
-                            article.title,
-                            style: AppTheme.headlineStyle.copyWith(
-                              fontSize: 26,
-                              color: AppTheme.phatoTextGray,
-                            ),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 8),
-
-                          // Descrição
-                          Text(
-                            article.description ?? 'Sem resumo disponível.',
-                            style: AppTheme.bodyTextStyle.copyWith(
-                              color: AppTheme.phatoTextGray.withOpacity(0.8),
-                              fontSize: 16,
-                              height: 1.4,
-                            ),
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 100.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Categoria
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.phatoYellow,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppTheme.phatoYellow, width: 1),
+                  ),
+                  child: Text(
+                    article.category.toUpperCase(),
+                    style: AppTheme.bodyTextStyle.copyWith(
+                      color: AppTheme.phatoBlack,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
                     ),
                   ),
-                );
-              },
+                ),
+                const SizedBox(height: 8),
+
+                // Título
+                Text(
+                  article.title,
+                  style: AppTheme.headlineStyle.copyWith(
+                    fontSize: 26,
+                    color: AppTheme.phatoLightGray,
+                    shadows: [
+                      const Shadow(
+                        blurRadius: 6.0,
+                        color: AppTheme.phatoBlack,
+                        offset: Offset(2.0, 2.0),
+                      ),
+                    ],
+                  ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+
+                //Descrição
+                Flexible(
+                  child: Text(
+                    article.description ?? 'Sem resumo disponível.',
+                    style: AppTheme.bodyTextStyle.copyWith(
+                      color: AppTheme.phatoLightGray.withOpacity(0.9),
+                      fontSize: 16,
+                      height: 1.4,
+                      shadows: [
+                        const Shadow(
+                          blurRadius: 4.0,
+                          color: AppTheme.phatoBlack,
+                          offset: Offset(1.0, 1.0),
+                        ),
+                      ],
+                    ),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

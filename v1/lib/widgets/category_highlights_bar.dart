@@ -1,42 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import '../core/theme/app_theme.dart';
-
-// Modelo simples para os dados de um destaque
-class Highlight {
-  final String title;
-  final String imagePath;
-
-  Highlight({required this.title, required this.imagePath});
-}
+import '../data/static_data.dart';
+import '../models/highlight_timeline.dart';
+import '../screens/highlight_story_screen.dart';
 
 class CategoryHighlightsBar extends StatelessWidget {
   const CategoryHighlightsBar({super.key});
 
-  // Lista estática de destaques que agora usa imagens locais.
-  static final List<Highlight> _highlights = [
-    Highlight(title: 'Economia', imagePath: 'assets/highlights/economia.png'),
-    Highlight(title: 'Política', imagePath: 'assets/highlights/politica.png'),
-    Highlight(
-        title: 'Meio Amb.', imagePath: 'assets/highlights/meio-ambiente.png'),
-    Highlight(
-        title: 'Tecnologia', imagePath: 'assets/highlights/tecnologia.png'),
-    Highlight(title: 'Desporto', imagePath: 'assets/highlights/desporto.png'),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    // Carrega as linhas do tempo dos nossos dados estáticos
+    final List<HighlightTimeline> timelines = allHighlightTimelines;
+
+    return Container(
       height: 110,
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: _highlights.length + 1, // +1 para o botão "Adicionar"
+        itemCount: timelines.length + 1, // +1 para o botão "Adicionar"
         padding: const EdgeInsets.only(left: 16.0),
         itemBuilder: (context, index) {
           if (index == 0) {
             return _buildAddItem();
           }
-          final highlight = _highlights[index - 1];
-          return _buildHighlightItem(highlight);
+          // Ajusta o índice para aceder à lista de timelines
+          final timeline = timelines[index - 1];
+          return _buildHighlightItem(context, timeline);
         },
       ),
     );
@@ -48,48 +37,42 @@ class CategoryHighlightsBar extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: AppTheme.phatoTextGray, width: 2),
+          color: AppTheme.phatoGray,
         ),
-        child: const Center(
-          child: Icon(
-            CupertinoIcons.add,
-            color: AppTheme.phatoTextGray,
-            size: 32,
-          ),
+        child: const Icon(
+          CupertinoIcons.add,
+          color: AppTheme.phatoTextGray,
+          size: 32,
         ),
       ),
       onTap: () {
-        /* Sem ação por agora */
+        // Ação de adicionar (não implementada no protótipo)
       },
     );
   }
 
-  Widget _buildHighlightItem(Highlight highlight) {
+  Widget _buildHighlightItem(BuildContext context, HighlightTimeline timeline) {
     return _buildBaseHighlight(
-      title: highlight.title,
-      child: ClipOval(
-        // Usamos ClipOval para garantir que a imagem fique dentro do círculo
-        child: Image.asset(
-          highlight.imagePath,
-          fit: BoxFit.cover,
-          width: 70, // Tamanho explícito para a imagem
-          height: 70,
-          // CORREÇÃO: Adicionamos um errorBuilder para lidar com imagens em falta.
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              width: 70,
-              height: 70,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppTheme.phatoCardGray,
-                border: Border.all(color: AppTheme.phatoYellow, width: 2.5),
-              ),
-            );
-          },
+      title: timeline.title,
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: AppTheme.phatoYellow, width: 2.5),
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            // Carrega a imagem de capa da timeline
+            image: AssetImage(timeline.coverImageUrl),
+          ),
         ),
       ),
       onTap: () {
-        /* Sem ação por agora */
+        // Navega para a nova tela de visualização de histórias
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => HighlightStoryScreen(timeline: timeline),
+          ),
+        );
       },
     );
   }
@@ -106,16 +89,7 @@ class CategoryHighlightsBar extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Envolvemos o 'child' (a imagem) num Container com a borda amarela.
-          Container(
-            width: circleSize,
-            height: circleSize,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppTheme.phatoYellow, width: 2.5),
-            ),
-            child: child,
-          ),
+          SizedBox(width: circleSize, height: circleSize, child: child),
           const SizedBox(height: 6),
           Text(
             title,

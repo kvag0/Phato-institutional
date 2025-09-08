@@ -95,7 +95,7 @@ class _RegistrationChatScreenState extends State<RegistrationChatScreen> {
               _currentStep == RegistrationStep.awaitingPasswordConfirmation
           ? '*' * userInput.length
           : userInput,
-      style: AppTheme.bodyTextStyle.copyWith(color: AppTheme.phatoTextGray),
+      style: AppTheme.bodyTextStyle.copyWith(color: AppTheme.phatoBlack),
     );
 
     setState(() {
