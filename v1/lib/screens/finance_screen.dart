@@ -8,8 +8,7 @@ class FinanceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('Finanças',
-            style: AppTheme.headlineStyle.copyWith(fontSize: 20)),
+        middle: Text('Finanças', style: AppTheme.headlineStyle),
         backgroundColor: AppTheme.phatoBlack,
         border: null,
       ),

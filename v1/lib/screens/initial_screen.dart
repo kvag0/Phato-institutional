@@ -18,7 +18,7 @@ class InitialScreen extends StatelessWidget {
           children: [
             // Logo "Phato"
             Text(
-              'Phato',
+              'Phato.',
               style: GoogleFonts.anton(
                 fontSize: 80,
                 fontWeight: FontWeight.bold,
@@ -60,13 +60,7 @@ class InitialScreen extends StatelessWidget {
                         builder: (context) => const LoginScreen()),
                   );
                 },
-                child: Text(
-                  'ENTRAR',
-                  style: AppTheme.bodyTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.phatoYellow,
-                  ),
-                ),
+                child: Text('ENTRAR', style: AppTheme.headlineStyle),
               ),
             ),
             const SizedBox(height: 32),

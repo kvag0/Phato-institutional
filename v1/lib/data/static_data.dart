@@ -217,7 +217,7 @@ final List<HighlightTimeline> allHighlightTimelines = [
     ],
   ),
   const HighlightTimeline(
-    title: 'A Reforma do SNS',
+    title: 'Reforma do SNS',
     coverImageUrl:
         '/Users/caiosobrinho/Downloads/Phato-institutional/v1/assets/highlights/politica.png',
     moments: [

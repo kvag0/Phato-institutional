@@ -61,7 +61,7 @@ class CustomSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                               );
                             }
                           },
-                          child: Text('Phato', style: AppTheme.logoStyle),
+                          child: Text('Phato.', style: AppTheme.logoStyle),
                         ),
                       ),
                     ),

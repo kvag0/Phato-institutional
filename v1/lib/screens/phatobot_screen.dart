@@ -117,8 +117,8 @@ class _PhatoBotScreenState extends State<PhatoBotScreen> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('PhatoBot'),
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('PhatoBot', style: AppTheme.headlineStyle),
       ),
       child: SafeArea(
         child: Column(

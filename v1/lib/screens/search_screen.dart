@@ -15,7 +15,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('Buscar', style: AppTheme.logoStyle),
+        middle: Text('Buscar', style: AppTheme.headlineStyle),
         backgroundColor: AppTheme.phatoBlack,
       ),
       child: SafeArea(

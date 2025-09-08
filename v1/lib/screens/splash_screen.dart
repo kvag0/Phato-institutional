@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Phato',
+                'Phato.',
                 style: GoogleFonts.anton(
                   fontSize: 60,
                   fontWeight: FontWeight.bold,
