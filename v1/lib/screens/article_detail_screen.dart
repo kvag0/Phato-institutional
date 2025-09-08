@@ -105,7 +105,10 @@ class ArticleDetailScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   CupertinoPageRoute(
-                    builder: (context) => PhatoBotScreen(article: article),
+                    builder: (context) => PhatoBotScreen(
+                      article: article,
+                      comesFromArticle: null,
+                    ),
                   ),
                 );
               },

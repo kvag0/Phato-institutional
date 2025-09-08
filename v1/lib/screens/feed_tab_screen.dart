@@ -12,36 +12,48 @@ class FeedTabPage extends StatefulWidget {
 }
 
 class _FeedTabPageState extends State<FeedTabPage> {
-  // A lista de notícias agora vem do nosso ficheiro de dados centralizado
-  final List<Article> _articles = allArticles;
+  // (NOVO) Cria um ScrollController para controlar a posição do scroll.
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
+    final List<Article> articles = allArticles;
 
     return CupertinoPageScaffold(
       child: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           SliverPersistentHeader(
             pinned: true,
             delegate: CustomSliverHeaderDelegate(
               minHeight: 60 + topPadding,
-              maxHeight: 320 + topPadding,
+              maxHeight:
+                  295 + topPadding, //310 para mostrar "pra voce | sua regiao"
+              scrollController: _scrollController,
             ),
           ),
           SliverFillRemaining(
             hasScrollBody: true,
-            child: SafeArea(
-              top: false,
-              child: PageView.builder(
-                scrollDirection: Axis.vertical,
-                // Usa a lista de artigos local
-                itemCount: _articles.length,
-                itemBuilder: (context, index) {
-                  final article = _articles[index];
-                  return ArticleStoryItem(article: article);
-                },
-              ),
+            child: PageView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: articles.length,
+              itemBuilder: (context, index) {
+                final article = articles[index];
+                return ArticleStoryItem(article: article);
+              },
             ),
           ),
         ],

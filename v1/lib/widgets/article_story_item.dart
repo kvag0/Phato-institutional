@@ -110,7 +110,7 @@ class ArticleStoryItem extends StatelessWidget {
                   child: Text(
                     article.description ?? 'Sem resumo disponível.',
                     style: AppTheme.bodyTextStyle.copyWith(
-                      color: AppTheme.phatoLightGray.withOpacity(0.9),
+                      color: AppTheme.phatoLightGray,
                       fontSize: 16,
                       height: 1.4,
                       shadows: [
