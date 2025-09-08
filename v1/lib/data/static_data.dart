@@ -1,8 +1,121 @@
-import '../models/article.dart';
-import '../models/highlight_timeline.dart';
-import '../models/highlight_moment.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:phato_prototype/models/article.dart';
+import 'package:phato_prototype/models/highlight_moment.dart';
+import 'package:phato_prototype/models/highlight_timeline.dart';
+import 'package:phato_prototype/models/topic.dart';
+import 'package:phato_prototype/models/usuario.dart';
 
-// ignore_for_file: long-lines
+// (NOVO) Adiciona as definições das classes que estavam em falta.
+
+/// Representa um "emblema" ou conquista que o utilizador pode ganhar.
+class Achievement {
+  final String name;
+  final IconData icon;
+  final Color color;
+  const Achievement(
+      {required this.name, required this.icon, required this.color});
+}
+
+/// Representa um item na lista de atividades recentes do utilizador.
+class ActivityItem {
+  final String title;
+  final IconData icon;
+  final String timestamp;
+  const ActivityItem(
+      {required this.title, required this.icon, required this.timestamp});
+}
+
+/// Um modelo de dados combinado para exibir estatísticas de tópicos no perfil.
+class TopicData {
+  final String name;
+  final String chave;
+  final IconData icon;
+  final int count;
+  const TopicData(
+      {required this.name,
+      required this.chave,
+      required this.icon,
+      required this.count});
+}
+
+// --- DADOS ESTÁTICOS ---
+
+final Usuario staticUser = Usuario(
+  id: 'user_123',
+  nome: 'Caio Sobrinho',
+  email: 'caio@phato.app',
+  imageUrl: 'assets/user_avatar.png',
+  subscription: 'Pro',
+  level: 12,
+  xp: 340,
+  nextLevelXp: 500,
+  stats: {
+    'articlesRead': 82,
+    'biasVotes': 45,
+    'sourcesViewed': 30,
+  },
+  topicReadCounts: {
+    'clima': 15,
+    'quantico': 25,
+    'imobiliario': 10,
+    'sns': 32,
+  },
+);
+
+final List<Topic> allTopics = [
+  Topic(nome: 'Crise Climática', chave: 'clima', icon: CupertinoIcons.flame),
+  Topic(
+      nome: 'Avanços Quânticos',
+      chave: 'quantico',
+      icon: CupertinoIcons.tuningfork),
+  Topic(
+      nome: 'Bolha Imobiliária',
+      chave: 'imobiliario',
+      icon: CupertinoIcons.house),
+  Topic(nome: 'Reforma do SNS', chave: 'sns', icon: CupertinoIcons.heart),
+];
+
+const List<Achievement> staticAchievements = [
+  Achievement(
+      name: 'Leitor Bronze',
+      icon: CupertinoIcons.rosette,
+      color: Color(0xffcd7f32)),
+  Achievement(
+      name: 'Leitor Prata',
+      icon: CupertinoIcons.rosette,
+      color: Color(0xffc0c0c0)),
+  Achievement(
+      name: 'Leitor Ouro',
+      icon: CupertinoIcons.rosette,
+      color: Color(0xffffd700)),
+  Achievement(
+      name: 'Curioso',
+      icon: CupertinoIcons.search,
+      color: CupertinoColors.systemBlue),
+  Achievement(
+      name: 'Político',
+      icon: CupertinoIcons.person_3,
+      color: CupertinoColors.systemRed),
+  Achievement(
+      name: 'Cientista',
+      icon: CupertinoIcons.lab_flask,
+      color: CupertinoColors.systemGreen),
+];
+
+const List<ActivityItem> staticActivities = [
+  ActivityItem(
+      title: 'Você ganhou o emblema "Leitor Ouro"',
+      icon: CupertinoIcons.rosette,
+      timestamp: 'Hoje'),
+  ActivityItem(
+      title: 'Você leu 10 artigos sobre "SNS"',
+      icon: CupertinoIcons.heart,
+      timestamp: 'Ontem'),
+  ActivityItem(
+      title: 'Você leu o seu primeiro artigo sobre "Clima"',
+      icon: CupertinoIcons.flame,
+      timestamp: 'Há 3 dias'),
+];
 
 /// Lista centralizada de todos os artigos para o protótipo.
 final List<Article> allArticles = [

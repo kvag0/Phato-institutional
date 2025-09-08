@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:phato_prototype/core/theme/app_theme.dart';
 import 'package:phato_prototype/screens/home_screen.dart';
 
@@ -20,8 +21,11 @@ class LoginScreen extends StatelessWidget {
     }
 
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('Entrar'),
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(
+          'Entrar',
+          style: AppTheme.headlineStyle,
+        ),
       ),
       child: SafeArea(
         child: Padding(

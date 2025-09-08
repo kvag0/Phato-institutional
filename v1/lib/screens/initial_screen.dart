@@ -60,7 +60,13 @@ class InitialScreen extends StatelessWidget {
                         builder: (context) => const LoginScreen()),
                   );
                 },
-                child: Text('ENTRAR', style: AppTheme.headlineStyle),
+                child: Text(
+                  'ENTRAR',
+                  style: AppTheme.bodyTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.phatoYellow,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 32),
